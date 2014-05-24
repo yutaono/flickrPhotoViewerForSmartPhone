@@ -37,13 +37,16 @@
         });
     });
 
+    /**
+     * variables
+     */
     var currentPhotoNumber = 0; // 現在表示している画像の番号(サムネイル画像は除く)
     var photoDatas = []; // 画像のデータ
     var originalPhotos = []; // オリジナルサイズの画像を保持する配列
     var isDisplayingOriginal = false;
     var isAjaxDone = false; //
     var TEXT = 'colorful';
-    var PER_PAGE = 40;
+    var PER_PAGE = 32;
     var currentPage = 1;
 
     /**
@@ -77,14 +80,20 @@
                         currentPhotoNumber++;
                         nextImage(currentPhotoNumber);
                     } else {
-                        event.preventDefault();
+                        var options = getFlickOptions(TEXT, PER_PAGE, ++currentPage);
+
+                        isAjaxDone = false;
+                        requestSearch(options).done(function(data){
+                            generatePhotoDOM(data.photos.photo);
+                            isAjaxDone = true;
+                        });
                     }
                 } else { // 左隣の要素を表示
                     if (currentPhotoNumber !== 0) {
                         currentPhotoNumber--;
                         nextImage(currentPhotoNumber);
                     } else {
-                        event.preventDefault();
+                        currentPhotoNumber = photoDatas.length - 1;
                     }
                 }
 
@@ -173,6 +182,7 @@
         $(window).on("scroll", function() {
             scrollHeight = $(document).height();
             scrollPosition = $(window).height() + $(window).scrollTop();
+
             if ( isAjaxDone &&
                 ((scrollHeight - scrollPosition) / scrollHeight <= 0.1)
             ){
@@ -183,8 +193,6 @@
                     generatePhotoDOM(data.photos.photo);
                     isAjaxDone = true;
                 });
-
-            } else {
             }
         });
 

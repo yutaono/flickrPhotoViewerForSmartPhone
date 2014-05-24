@@ -21,7 +21,6 @@
         return options;
     }
 
-
     /**
      * optionsで指定されたajaxを実行するメソッド.
      */
