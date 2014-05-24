@@ -12,16 +12,6 @@ $time : 600ms;
     animation: fadeOut $time;
 }
 
-.toSkalton {
-    animation: toSkalton $time;
-    opacity: 0.4;
-}
-
-.fromSkalton {
-    animation: fromSkalton $time;
-    opacity: 1.0;
-}
-
 @keyframes fadeIn {
     0% {
         opacity: 0.0;
@@ -38,6 +28,16 @@ $time : 600ms;
     100% {
         opacity: 0.0;
     }
+}
+
+.toSkalton {
+    animation: toSkalton $time;
+    opacity: 0.4;
+}
+
+.fromSkalton {
+    animation: fromSkalton $time;
+    opacity: 1.0;
 }
 
 @keyframes toSkalton {

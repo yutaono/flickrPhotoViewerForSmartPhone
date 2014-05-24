@@ -44,9 +44,9 @@
     var photoDatas = []; // 画像のデータ
     var originalPhotos = []; // オリジナルサイズの画像を保持する配列
     var isDisplayingOriginal = false;
-    var isAjaxDone = false; //
+    var isAjaxDone = false;
     var TEXT = 'colorful';
-    var PER_PAGE = 32;
+    var PER_PAGE = 4;
     var currentPage = 1;
     var AUTO_TRANSITION_TIME = 8000;
 
@@ -59,7 +59,6 @@
         $('.thumbnail').removeClass('toSkalton').removeClass('fromSkalton');
         isDisplayingOriginal = false;
 
-
         $('#landscape').append(originalPhotos[currentPhotoNumber]);
         $('img', '#landscape').addClass('original fadeIn');
         $(window).off('scroll');
@@ -70,14 +69,7 @@
 
         function transitionImage() {
             if (currentPhotoNumber === photoDatas.length - 1) {
-                var options = getFlickOptions(TEXT, PER_PAGE, ++currentPage);
-
-                isAjaxDone = false;
-                requestSearch(options).done(function(data){
-                    generatePhotoDOM(data.photos.photo);
-                    isAjaxDone = true;
-                    nextImage(++currentPhotoNumber);
-                });
+                getNextPage();
             } else {
                 nextImage(++currentPhotoNumber);
             }
@@ -98,14 +90,7 @@
 
                 if (start >= end) { // 右隣の要素を表示
                     if (currentPhotoNumber === photoDatas.length - 1) {
-                        var options = getFlickOptions(TEXT, PER_PAGE, ++currentPage);
-
-                        isAjaxDone = false;
-                        requestSearch(options).done(function(data){
-                            generatePhotoDOM(data.photos.photo);
-                            isAjaxDone = true;
-                            nextImage(++currentPhotoNumber);
-                        });
+                        getNextPage();
                     } else {
                         nextImage(++currentPhotoNumber);
                     }
@@ -127,13 +112,23 @@
             $('#landscape').append(originalPhotos[number]);
             $('img', '#landscape').addClass('original fadeIn');
         }
+
+        function getNextPage(){
+            var options = getFlickOptions(TEXT, PER_PAGE, ++currentPage);
+
+            isAjaxDone = false;
+            requestSearch(options).done(function(data){
+                generatePhotoDOM(data.photos.photo);
+                isAjaxDone = true;
+                nextImage(++currentPhotoNumber);
+            });
+        }
     }
 
     /**
      * 縦画面のモード
      */
     function portraitMode() {
-        $('#landscape').children().remove();
         offTouchEvent($('#container'));
 
         $(window).on("scroll", function() {
@@ -156,6 +151,9 @@
         function offTouchEvent($element) {
             $element.off('touchstart touchend');
         }
+
+        $('#landscape').children().remove();
+        $('img', '#landscape').remove();
     }
 
     /**
