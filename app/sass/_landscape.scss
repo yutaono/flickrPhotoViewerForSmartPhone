@@ -1,0 +1,28 @@
+/**
+ * 横画面の時の設定
+ */
+
+@media only screen and (orientation: landscape) {
+
+    #container {
+        position: fixed;
+
+        #portrait {
+            display: none;
+        }
+
+        #landscape {
+            background: linear-gradient(to bottom, #444, #111);
+            width: 100%;
+            height: 100%;
+            text-align: center;
+
+            img.original {
+                margin-left: auto;
+                margin-right: auto;
+                height: 100%;
+            }
+        }
+    }
+
+}

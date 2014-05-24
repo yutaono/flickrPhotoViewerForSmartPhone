@@ -1,0 +1,35 @@
+/**
+ * 縦画面の時の設定
+ */
+
+@media only screen and (orientation: portrait) {
+
+    #portrait {
+        padding: 8px;
+        position: relative;
+
+        img {
+            vertical-align: bottom;
+
+            &.thumbnail {
+                object-fit: cover;
+                overflow: hidden;
+            }
+        }
+
+        .card {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+
+            .original {
+                text-align: center;
+                width: 100%;
+                overflow: hidden;
+            }
+        }
+    }
+
+
+
+}

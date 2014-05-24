@@ -1,0 +1,106 @@
+@charset "UTF-8";
+body, div, img, h2 {
+  padding: 0;
+  margin: 0;
+}
+
+.fadeIn {
+  -webkit-animation: fadeIn 400ms;
+  animation: fadeIn 400ms;
+}
+
+.fadeOut {
+  -webkit-animation: fadeOut 400ms;
+  animation: fadeOut 400ms;
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0.0;
+  }
+
+  100% {
+    opacity: 1.0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0.0;
+  }
+
+  100% {
+    opacity: 1.0;
+  }
+}
+@-webkit-keyframes fadeOut {
+  0% {
+    opacity: 1.0;
+  }
+
+  100% {
+    opacity: 0.0;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1.0;
+  }
+
+  100% {
+    opacity: 0.0;
+  }
+}
+@media only screen and (orientation: portrait) {
+  #portrait {
+    padding: 8px;
+    position: relative;
+  }
+  #portrait img {
+    vertical-align: bottom;
+  }
+  #portrait img.thumbnail {
+    object-fit: cover;
+    overflow: hidden;
+  }
+  #portrait .card {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+  }
+  #portrait .card .original {
+    text-align: center;
+    width: 100%;
+    overflow: hidden;
+  }
+}
+@media only screen and (orientation: landscape) {
+  #container {
+    position: fixed;
+  }
+  #container #portrait {
+    display: none;
+  }
+  #container #landscape {
+    background: -webkit-linear-gradient(top, #444444, #111111);
+    background: linear-gradient(to bottom, #444444, #111111);
+    width: 100%;
+    height: 100%;
+    text-align: center;
+  }
+  #container #landscape img.original {
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+  }
+}
+body {
+  position: relative;
+}
+
+html, body, #container {
+  width: 100%;
+  height: 100%;
+}
+
+/*# sourceMappingURL=main.css.map */

@@ -1,0 +1,39 @@
+{
+  "name": "remodal",
+  "version": "0.1.6",
+  "homepage": "http://vodkabears.github.io/remodal/",
+  "authors": [
+    "Ilya Makarov <dfrost.00@gmail.com>"
+  ],
+  "description": "Flat, responsive, lightweight, easy customizable modal window plugin with declarative state notation and hash tracking.",
+  "main": [
+    "dist/jquery.remodal.js",
+    "dist/jquery.remodal.min.js",
+    "dist/jquery.remodal.css"
+  ],
+  "keywords": [
+    "jquery",
+    "plugin",
+    "flat",
+    "responsive",
+    "modal",
+    "popup",
+    "window",
+    "dialog",
+    "popin",
+    "lightbox",
+    "ui",
+    "zepto"
+  ],
+  "license": "MIT",
+  "_release": "0.1.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.6",
+    "commit": "635b355607e36d6aeeff257fa6c960e8fb3f3a25"
+  },
+  "_source": "git://github.com/VodkaBears/Remodal.git",
+  "_target": "~0.1.6",
+  "_originalSource": "remodal",
+  "_direct": true
+}

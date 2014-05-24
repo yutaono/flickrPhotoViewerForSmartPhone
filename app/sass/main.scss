@@ -1,0 +1,16 @@
+@charset "UTF-8";
+@import "reset";
+@import "helper";
+@import "animation";
+@import "portrait";
+@import "landscape";
+
+body {
+    position: relative;
+}
+
+html, body, #container {
+    width: 100%;
+    height: 100%;
+}
+
