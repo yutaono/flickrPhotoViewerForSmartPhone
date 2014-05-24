@@ -52,6 +52,7 @@
     function landscapeMode() {
         setTimeout(scrollTo, 100, 0, 1); // アドレスバーを消す。
         $('.card').remove();
+        isDisplayingOriginal = false;
 
         $('#landscape').append(originalPhotos[currentPhotoNumber]);
         $('img', '#landscape').addClass('original fadeIn');
@@ -97,6 +98,71 @@
     }
 
     /**
+     * thumbnailをクリックした時の動作をハンドリング
+     */
+    $('#portrait').on({
+        'click': function(){
+            // 拡大画像が表示されていれば、その画像を消す。
+            if(isDisplayingOriginal) {
+                $('.card').removeClass('fadeIn').addClass('fadeOut');
+                $('.thumbnail').animate({
+                    'opacity': 1.0
+                }, function(){
+                    $('.fadeOut').remove();
+                });
+                isDisplayingOriginal = false;
+            // 拡大画像が表示されていなければ、クリックされたサムネイルの拡大画像を表示する。
+            } else {
+                toggleActiveOriginal($(this));
+                $('.thumbnail').animate({
+                    'opacity': 0.4
+                }, function(){});
+                isDisplayingOriginal = true;
+            }
+        }
+    }, '.thumbnail');
+
+    /**
+     * 拡大画像をクリックした時の動作をハンドリング
+     */
+    $('#container').on({
+        'click': function() {
+            // 拡大画像を消す
+            $('.card').removeClass('fadeIn').addClass('fadeOut');
+            $('.thumbnail').animate({
+                'opacity': 1.0
+            }, function(){
+                $('.fadeOut').remove();
+            });
+            isDisplayingOriginal = false;
+        }
+    }, '.card');
+
+
+    /**
+     *　現在表示している拡大画像を消し、指定された画像を描画するメソッド
+     */
+    function toggleActiveOriginal($self){
+        $('.card').addClass('fadeOut').remove();
+
+        var id = $self.attr('id');
+        $(photoDatas).each(function(index){
+            if(this.id === id) {
+                var original = getFlickrURL(this, ".jpg");
+                var photo = originalPhotos[index];
+
+                $('#portrait').append('<div class="card"></div>');
+                $('.card').append(photo);
+                $('img', '.card').addClass('original');
+                $('.card').center().addClass('fadeIn');
+
+                currentPhotoNumber = index;
+            }
+        });
+    }
+
+
+    /**
      * 縦画面のモード
      */
     function portraitMode() {
@@ -104,52 +170,13 @@
         offTouchEvent($('#container'));
         $('img', '#portrait').css({'opacity': 1.0});
 
-        /**
-         * thumbnailをクリックした時の動作をハンドリング
-         */
-        $('#portrait').on({
-            'click': function(){
-                // 拡大画像が表示されていれば、その画像を消す。
-                if(isDisplayingOriginal) {
-                    $('.card').removeClass('fadeIn').addClass('fadeOut').remove();
-                    $('.thumbnail').animate({
-                        'opacity': 1.0
-                    }, function(){});
-                    isDisplayingOriginal = false;
-                // 拡大画像が表示されていなければ、クリックされたサムネイルの拡大画像を表示する。
-                } else {
-                    toggleActiveOriginal($(this));
-                    $('.thumbnail').animate({
-                        'opacity': 0.4
-                    }, function(){});
-                    isDisplayingOriginal = true;
-                }
-            }
-        }, '.thumbnail');
-
-        /**
-         * 拡大画像をクリックした時の動作をハンドリング
-         */
-        $('#container').on({
-            'click': function() {
-                // 拡大画像を消す
-                $('.card').removeClass('fadeIn').addClass('fadeOut').remove();
-                $('.thumbnail').animate({
-                    'opacity': 1.0
-                }, function(){});
-                isDisplayingOriginal = false;
-            }
-        }, '.card');
-
-
-
         $(window).on("scroll", function() {
             scrollHeight = $(document).height();
             scrollPosition = $(window).height() + $(window).scrollTop();
             if ( isAjaxDone &&
                 ((scrollHeight - scrollPosition) / scrollHeight <= 0.1)
             ){
-                var options = getFlickOptions(TEXT,PER_PAGE, ++currentPage);
+                var options = getFlickOptions(TEXT, PER_PAGE, ++currentPage);
 
                 isAjaxDone = false;
                 requestSearch(options).done(function(data){
@@ -160,28 +187,6 @@
             } else {
             }
         });
-
-        /**
-         *　現在表示している拡大画像を消し、指定された画像を描画するメソッド
-         */
-        function toggleActiveOriginal($self){
-            $('.card').addClass('fadeOut').remove();
-
-            var id = $self.attr('id');
-            $(photoDatas).each(function(index){
-                if(this.id === id) {
-                    var original = getFlickrURL(this, ".jpg");
-                    var photo = originalPhotos[index];
-
-                    $('#portrait').append('<div class="card"></div>');
-                    $('.card').append(photo);
-                    $('img', '.card').addClass('original');
-                    $('.card').center().addClass('fadeIn');
-
-                    currentPhotoNumber = index;
-                }
-            });
-        }
 
         function offTouchEvent($element) {
             $element.off('touchstart touchend');
