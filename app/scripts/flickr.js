@@ -65,7 +65,6 @@
         });
     }
 
-
     /**
      * Flickrで取得した写真オブジェクトから写真のurlを取得するメソッド.
      */
@@ -81,5 +80,4 @@
     window.getDetailById = getDetailById;
     window.getFlickrURL = getFlickrURL;
     window.getFlickOptions = getFlickOptions;
-
 })(window);
