@@ -46,7 +46,7 @@
     var isDisplayingOriginal = false;
     var isAjaxDone = false; //
     var TEXT = 'colorful';
-    var PER_PAGE = 28;
+    var PER_PAGE = 32;
     var currentPage = 1;
     var AUTO_TRANSITION_TIME = 8000;
 
@@ -56,7 +56,9 @@
     function landscapeMode() {
         setTimeout(scrollTo, 100, 0, 1); // アドレスバーを消す。
         $('.card').remove();
+        $('.thumbnail').removeClass('toSkalton').removeClass('fromSkalton');
         isDisplayingOriginal = false;
+
 
         $('#landscape').append(originalPhotos[currentPhotoNumber]);
         $('img', '#landscape').addClass('original fadeIn');
@@ -133,7 +135,6 @@
     function portraitMode() {
         $('#landscape').children().remove();
         offTouchEvent($('#container'));
-        // $('img', '#portrait').css({'opacity': 1.0});
 
         $(window).on("scroll", function() {
             scrollHeight = $(document).height();
@@ -216,7 +217,6 @@
             isDisplayingOriginal = false;
         }
     }, '.card');
-
 
     /**
      *　現在表示している拡大画像を消し、指定された画像を描画するメソッド
