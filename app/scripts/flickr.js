@@ -1,6 +1,28 @@
 ;(function(window) {
 
     /**
+     * 画像を取得するoptionsを返すメソッド
+     */
+    function getFlickOptions(text, per_page, page) {
+        var options = {};
+        options.url = 'https://api.flickr.com/services/rest/';
+        options.method = 'GET';
+        options.params = {
+            method: 'flickr.photos.search',
+            per_page: per_page,
+            text: text,
+            sort: 'interestingness-desc',
+            api_key: '69558575cccfeb6086b6193f3f8d1776',
+            format: 'json',
+            nojsoncallback: 1,
+            page: page
+        };
+
+        return options;
+    }
+
+
+    /**
      * optionsで指定されたajaxを実行するメソッド.
      */
     function requestSearch(options) {
@@ -59,5 +81,6 @@
     window.requestSearch = requestSearch;
     window.getDetailById = getDetailById;
     window.getFlickrURL = getFlickrURL;
+    window.getFlickOptions = getFlickOptions;
 
 })(window);

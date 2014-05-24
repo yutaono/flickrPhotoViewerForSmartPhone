@@ -9,29 +9,14 @@
  */
 (function($, window, document) {
     $(function() {
-
-        /**
-         * 画像を取得するoptionsを設定する。
-         */
-        var options = {};
-        options.url = 'https://api.flickr.com/services/rest/';
-        options.method = 'GET';
-        options.params = {
-            method: 'flickr.photos.search',
-            per_page: 40,
-            text: 'colorful',
-            sort: 'interestingness-desc',
-            api_key: '69558575cccfeb6086b6193f3f8d1776',
-            format: 'json',
-            nojsoncallback: 1,
-            page: 2
-        };
+        var options = getFlickOptions(TEXT, PER_PAGE, currentPage);
 
         /**
          * 画像を取得し、それぞれのモードで画面を描画する。
          */
         requestSearch(options).done(function(data){
             generatePhotoDOM(data.photos.photo);
+            isAjaxDone = true;
 
             if (isLandscape()) {
                 landscapeMode();
@@ -49,21 +34,17 @@
             } else {
                 portraitMode();
             }
-        }).on("scroll", function() {
-            scrollHeight = $(document).height();
-            scrollPosition = $(window).height() + $(window).scrollTop();
-            if ( (scrollHeight - scrollPosition) / scrollHeight <= 0.05) {
-            } else {
-
-            }
         });
-
     });
 
     var currentPhotoNumber = 0; // 現在表示している画像の番号(サムネイル画像は除く)
     var photoDatas = []; // 画像のデータ
     var originalPhotos = []; // オリジナルサイズの画像を保持する配列
     var isDisplayingOriginal = false;
+    var isAjaxDone = false; //
+    var TEXT = 'colorful';
+    var PER_PAGE = 40;
+    var currentPage = 1;
 
     /**
      * 横画面のモード
@@ -74,6 +55,7 @@
 
         $('#landscape').append(originalPhotos[currentPhotoNumber]);
         $('img', '#landscape').addClass('original fadeIn');
+        $(window).off('scroll');
 
         swipeImage($('#container'));
 
@@ -158,6 +140,26 @@
                 isDisplayingOriginal = false;
             }
         }, '.card');
+
+
+
+        $(window).on("scroll", function() {
+            scrollHeight = $(document).height();
+            scrollPosition = $(window).height() + $(window).scrollTop();
+            if ( isAjaxDone &&
+                ((scrollHeight - scrollPosition) / scrollHeight <= 0.1)
+            ){
+                var options = getFlickOptions(TEXT,PER_PAGE, ++currentPage);
+
+                isAjaxDone = false;
+                requestSearch(options).done(function(data){
+                    generatePhotoDOM(data.photos.photo);
+                    isAjaxDone = true;
+                });
+
+            } else {
+            }
+        });
 
         /**
          *　現在表示している拡大画像を消し、指定された画像を描画するメソッド
