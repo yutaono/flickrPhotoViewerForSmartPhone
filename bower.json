@@ -2,7 +2,6 @@
   "name": "flickr",
   "private": true,
   "dependencies": {
-    "fontawesome": "~4.0.3",
     "modernizr": "~2.6.2",
     "jquery": "~1.10.2"
   },

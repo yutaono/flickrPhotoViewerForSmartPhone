@@ -49,18 +49,28 @@
             } else {
                 portraitMode();
             }
+        }).on("scroll", function() {
+            scrollHeight = $(document).height();
+            scrollPosition = $(window).height() + $(window).scrollTop();
+            if ( (scrollHeight - scrollPosition) / scrollHeight <= 0.05) {
+            } else {
+
+            }
         });
+
     });
 
     var currentPhotoNumber = 0; // 現在表示している画像の番号(サムネイル画像は除く)
-    var photosInfo = []; // 画像のデータ
+    var photoDatas = []; // 画像のデータ
     var originalPhotos = []; // オリジナルサイズの画像を保持する配列
+    var isDisplayingOriginal = false;
 
     /**
      * 横画面のモード
      */
     function landscapeMode() {
         setTimeout(scrollTo, 100, 0, 1); // アドレスバーを消す。
+        $('.card').remove();
 
         $('#landscape').append(originalPhotos[currentPhotoNumber]);
         $('img', '#landscape').addClass('original fadeIn');
@@ -80,7 +90,7 @@
                 end = event.originalEvent.changedTouches[0].pageX;
 
                 if (start >= end) { // 右隣の要素を表示
-                    if (currentPhotoNumber !== photosInfo.length - 1) {
+                    if (currentPhotoNumber !== photoDatas.length - 1) {
                         currentPhotoNumber++;
                         nextImage(currentPhotoNumber);
                     } else {
@@ -118,17 +128,19 @@
         $('#portrait').on({
             'click': function(){
                 // 拡大画像が表示されていれば、その画像を消す。
-                if($('#portrait').children().is('.card')) {
+                if(isDisplayingOriginal) {
                     $('.card').removeClass('fadeIn').addClass('fadeOut').remove();
                     $('.thumbnail').animate({
                         'opacity': 1.0
                     }, function(){});
+                    isDisplayingOriginal = false;
                 // 拡大画像が表示されていなければ、クリックされたサムネイルの拡大画像を表示する。
                 } else {
                     toggleActiveOriginal($(this));
                     $('.thumbnail').animate({
                         'opacity': 0.4
                     }, function(){});
+                    isDisplayingOriginal = true;
                 }
             }
         }, '.thumbnail');
@@ -143,35 +155,35 @@
                 $('.thumbnail').animate({
                     'opacity': 1.0
                 }, function(){});
+                isDisplayingOriginal = false;
             }
         }, '.card');
 
+        /**
+         *　現在表示している拡大画像を消し、指定された画像を描画するメソッド
+         */
+        function toggleActiveOriginal($self){
+            $('.card').addClass('fadeOut').remove();
+
+            var id = $self.attr('id');
+            $(photoDatas).each(function(index){
+                if(this.id === id) {
+                    var original = getFlickrURL(this, ".jpg");
+                    var photo = originalPhotos[index];
+
+                    $('#portrait').append('<div class="card"></div>');
+                    $('.card').append(photo);
+                    $('img', '.card').addClass('original');
+                    $('.card').center().addClass('fadeIn');
+
+                    currentPhotoNumber = index;
+                }
+            });
+        }
 
         function offTouchEvent($element) {
             $element.off('touchstart touchend');
         }
-    }
-
-    /**
-     *　現在表示している拡大画像を消し、指定された画像を描画するメソッド
-     */
-    function toggleActiveOriginal($self){
-        $('.card').addClass('fadeOut').remove();
-
-        var id = $self.attr('id');
-        $(photosInfo).each(function(index){
-            if(this.id === id) {
-                var original = getFlickrURL(this, ".jpg");
-                var photo = originalPhotos[index];
-
-                $('#portrait').append('<div class="card"></div>');
-                $('.card').append(photo);
-                $('img', '.card').addClass('original');
-                $('.card').center().addClass('fadeIn');
-
-                currentPhotoNumber = index;
-            }
-        });
     }
 
     /**
@@ -183,7 +195,7 @@
             var thumbnail = getFlickrURL(this, "_m.jpg");
             var original = getFlickrURL(this, ".jpg");
 
-            photosInfo.push(this);
+            photoDatas.push(this);
             tag += "<img id='" + this.id + "' class='thumbnail' src='" + thumbnail + "' width='76' height='76' alt=''>";
 
             // originalサイズの画像は、landscapeMode, portraitMode両方で用いるため配列として保持する
