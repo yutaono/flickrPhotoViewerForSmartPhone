@@ -4,14 +4,29 @@ body, div, img, h2 {
   margin: 0;
 }
 
+/**
+ * css animationを記述
+ */
 .fadeIn {
-  -webkit-animation: fadeIn 400ms;
-  animation: fadeIn 400ms;
+  -webkit-animation: fadeIn 600ms;
+  animation: fadeIn 600ms;
 }
 
 .fadeOut {
-  -webkit-animation: fadeOut 400ms;
-  animation: fadeOut 400ms;
+  -webkit-animation: fadeOut 600ms;
+  animation: fadeOut 600ms;
+}
+
+.toSkalton {
+  -webkit-animation: toSkalton 600ms;
+  animation: toSkalton 600ms;
+  opacity: 0.4;
+}
+
+.fromSkalton {
+  -webkit-animation: fromSkalton 600ms;
+  animation: fromSkalton 600ms;
+  opacity: 1.0;
 }
 
 @-webkit-keyframes fadeIn {
@@ -33,6 +48,7 @@ body, div, img, h2 {
     opacity: 1.0;
   }
 }
+
 @-webkit-keyframes fadeOut {
   0% {
     opacity: 1.0;
@@ -42,6 +58,7 @@ body, div, img, h2 {
     opacity: 0.0;
   }
 }
+
 @keyframes fadeOut {
   0% {
     opacity: 1.0;
@@ -51,6 +68,50 @@ body, div, img, h2 {
     opacity: 0.0;
   }
 }
+
+@-webkit-keyframes toSkalton {
+  0% {
+    opacity: 1.0;
+  }
+
+  100% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes toSkalton {
+  0% {
+    opacity: 1.0;
+  }
+
+  100% {
+    opacity: 0.4;
+  }
+}
+
+@-webkit-keyframes fromSkalton {
+  0% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1.0;
+  }
+}
+
+@keyframes fromSkalton {
+  0% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1.0;
+  }
+}
+
+/**
+ * 縦画面の時の設定
+ */
 @media only screen and (orientation: portrait) {
   #portrait {
     padding: 8px;
@@ -60,7 +121,6 @@ body, div, img, h2 {
     vertical-align: bottom;
   }
   #portrait img.thumbnail {
-    object-fit: cover;
     overflow: hidden;
   }
   #portrait .card {
@@ -74,6 +134,9 @@ body, div, img, h2 {
     overflow: hidden;
   }
 }
+/**
+ * 横画面の時の設定
+ */
 @media only screen and (orientation: landscape) {
   #container {
     position: fixed;

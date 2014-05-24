@@ -2,13 +2,24 @@
  * css animationを記述
  */
 
+$time : 600ms;
 
 .fadeIn {
-    animation: fadeIn 400ms;
+    animation: fadeIn $time;
 }
 
 .fadeOut {
-    animation: fadeOut 400ms;
+    animation: fadeOut $time;
+}
+
+.toSkalton {
+    animation: toSkalton $time;
+    opacity: 0.4;
+}
+
+.fromSkalton {
+    animation: fromSkalton $time;
+    opacity: 1.0;
 }
 
 @keyframes fadeIn {
@@ -26,5 +37,23 @@
     }
     100% {
         opacity: 0.0;
+    }
+}
+
+@keyframes toSkalton {
+    0% {
+        opacity: 1.0;
+    }
+    100% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes fromSkalton {
+    0% {
+        opacity: 0.4;
+    }
+    100% {
+        opacity: 1.0;
     }
 }

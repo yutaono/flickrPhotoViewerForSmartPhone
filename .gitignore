@@ -54,10 +54,8 @@ node_modules
 
 
 
-
-
-
-
+*.map
+.sass-cache
 wget-log
 
 

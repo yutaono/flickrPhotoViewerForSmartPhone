@@ -46,8 +46,9 @@
     var isDisplayingOriginal = false;
     var isAjaxDone = false; //
     var TEXT = 'colorful';
-    var PER_PAGE = 32;
+    var PER_PAGE = 28;
     var currentPage = 1;
+    var AUTO_TRANSITION_TIME = 8000;
 
     /**
      * 横画面のモード
@@ -63,6 +64,23 @@
 
         swipeImage($('#container'));
 
+        var autoTransition = setInterval(transitionImage, AUTO_TRANSITION_TIME);
+
+        function transitionImage() {
+            if (currentPhotoNumber === photoDatas.length - 1) {
+                var options = getFlickOptions(TEXT, PER_PAGE, ++currentPage);
+
+                isAjaxDone = false;
+                requestSearch(options).done(function(data){
+                    generatePhotoDOM(data.photos.photo);
+                    isAjaxDone = true;
+                    nextImage(++currentPhotoNumber);
+                });
+            } else {
+                nextImage(++currentPhotoNumber);
+            }
+        }
+
         /*
          * 画面をSwiipeした際に画像を入れ替えるメソッド
          */
@@ -70,106 +88,44 @@
             var start, end;
 
             $element.on('touchstart', function(event){
+                clearInterval(autoTransition);
                 event.preventDefault();
                 start = event.originalEvent.touches[0].pageX;
             }).on('touchend', function(event){
                 end = event.originalEvent.changedTouches[0].pageX;
 
                 if (start >= end) { // 右隣の要素を表示
-                    if (currentPhotoNumber !== photoDatas.length - 1) {
-                        currentPhotoNumber++;
-                        nextImage(currentPhotoNumber);
-                    } else {
+                    if (currentPhotoNumber === photoDatas.length - 1) {
                         var options = getFlickOptions(TEXT, PER_PAGE, ++currentPage);
 
                         isAjaxDone = false;
                         requestSearch(options).done(function(data){
                             generatePhotoDOM(data.photos.photo);
                             isAjaxDone = true;
+                            nextImage(++currentPhotoNumber);
                         });
+                    } else {
+                        nextImage(++currentPhotoNumber);
                     }
                 } else { // 左隣の要素を表示
                     if (currentPhotoNumber !== 0) {
-                        currentPhotoNumber--;
-                        nextImage(currentPhotoNumber);
+                        nextImage(--currentPhotoNumber);
                     } else {
                         currentPhotoNumber = photoDatas.length - 1;
                     }
                 }
 
-                function nextImage(number) {
-                    $('img', '#landscape').remove();
-                    $('#landscape').append(originalPhotos[number]);
-                    $('img', '#landscape').addClass('original fadeIn');
-                }
+                // transitionを再設定
+                autoTransition = setInterval(transitionImage, AUTO_TRANSITION_TIME);
             });
         }
-    }
 
-    /**
-     * thumbnailをクリックした時の動作をハンドリング
-     */
-    $('#portrait').on({
-        'click': function(){
-            // 拡大画像が表示されていれば、その画像を消す。
-            if(isDisplayingOriginal) {
-                $('.card').removeClass('fadeIn').addClass('fadeOut');
-                $('.thumbnail').animate({
-                    'opacity': 1.0
-                }, function(){
-                    $('.fadeOut').remove();
-                });
-                isDisplayingOriginal = false;
-            // 拡大画像が表示されていなければ、クリックされたサムネイルの拡大画像を表示する。
-            } else {
-                toggleActiveOriginal($(this));
-                $('.thumbnail').animate({
-                    'opacity': 0.4
-                }, function(){});
-                isDisplayingOriginal = true;
-            }
+        function nextImage(number) {
+            $('img', '#landscape').remove();
+            $('#landscape').append(originalPhotos[number]);
+            $('img', '#landscape').addClass('original fadeIn');
         }
-    }, '.thumbnail');
-
-    /**
-     * 拡大画像をクリックした時の動作をハンドリング
-     */
-    $('#container').on({
-        'click': function() {
-            // 拡大画像を消す
-            $('.card').removeClass('fadeIn').addClass('fadeOut');
-            $('.thumbnail').animate({
-                'opacity': 1.0
-            }, function(){
-                $('.fadeOut').remove();
-            });
-            isDisplayingOriginal = false;
-        }
-    }, '.card');
-
-
-    /**
-     *　現在表示している拡大画像を消し、指定された画像を描画するメソッド
-     */
-    function toggleActiveOriginal($self){
-        $('.card').addClass('fadeOut').remove();
-
-        var id = $self.attr('id');
-        $(photoDatas).each(function(index){
-            if(this.id === id) {
-                var original = getFlickrURL(this, ".jpg");
-                var photo = originalPhotos[index];
-
-                $('#portrait').append('<div class="card"></div>');
-                $('.card').append(photo);
-                $('img', '.card').addClass('original');
-                $('.card').center().addClass('fadeIn');
-
-                currentPhotoNumber = index;
-            }
-        });
     }
-
 
     /**
      * 縦画面のモード
@@ -177,7 +133,7 @@
     function portraitMode() {
         $('#landscape').children().remove();
         offTouchEvent($('#container'));
-        $('img', '#portrait').css({'opacity': 1.0});
+        // $('img', '#portrait').css({'opacity': 1.0});
 
         $(window).on("scroll", function() {
             scrollHeight = $(document).height();
@@ -222,4 +178,66 @@
 
         $('#portrait').append(tag);
     }
+
+
+    /**
+     * thumbnailをクリックした時の動作をハンドリング
+     */
+    $('#portrait').on({
+        'click': function(){
+            // 拡大画像が表示されていれば、その画像を消す。
+            if(isDisplayingOriginal) {
+                $('.card').removeClass('fadeIn').addClass('fadeOut');
+                $('.thumbnail').removeClass('toSkalton').addClass('fromSkalton');
+                isDisplayingOriginal = false;
+            // 拡大画像が表示されていなければ、クリックされたサムネイルの拡大画像を表示する。
+            } else {
+                toggleActiveOriginal($(this));
+                $('.thumbnail').removeClass('fromSkalton').addClass('toSkalton');
+                isDisplayingOriginal = true;
+            }
+        }
+    }, '.thumbnail');
+
+    $('#portrait').on({
+        'animationend webkitAnimationEnd': function() {
+            $(this).remove();
+        }
+    }, '.fadeOut');
+
+    /**
+     * 拡大画像をクリックした時の動作をハンドリング
+     */
+    $('#container').on({
+        'click': function() {
+            // 拡大画像を消す
+            $('.card').removeClass('fadeIn').addClass('fadeOut');
+            $('.thumbnail').removeClass('toSkalton').addClass('fromSkalton');
+            isDisplayingOriginal = false;
+        }
+    }, '.card');
+
+
+    /**
+     *　現在表示している拡大画像を消し、指定された画像を描画するメソッド
+     */
+    function toggleActiveOriginal($self){
+        $('.card').addClass('fadeOut').remove();
+
+        var id = $self.attr('id');
+        $(photoDatas).each(function(index){
+            if(this.id === id) {
+                var original = getFlickrURL(this, ".jpg");
+                var photo = originalPhotos[index];
+
+                $('#portrait').append('<div class="card"></div>');
+                $('.card').append(photo);
+                $('img', '.card').addClass('original');
+                $('.card').center().addClass('fadeIn');
+
+                currentPhotoNumber = index;
+            }
+        });
+    }
+
 }(window.jQuery, window, document));
