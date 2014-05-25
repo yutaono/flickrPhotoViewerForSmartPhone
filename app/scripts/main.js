@@ -46,9 +46,9 @@
     var isDisplayingOriginal = false;
     var isAjaxDone = false;
     var TEXT = 'colorful';
-    var PER_PAGE = 4;
+    var PER_PAGE = 32;
     var currentPage = 1;
-    var AUTO_TRANSITION_TIME = 8000;
+    var AUTO_TRANSITION_TIME = 6000;
 
     /**
      * 横画面のモード
